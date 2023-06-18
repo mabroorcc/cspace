@@ -1,15 +1,24 @@
 CC = gcc
-CFLAGS = -Wall -Wextra
+CFLAGS = -Wall -Wextra -I/opt/local/include
+LDFLAGS = -L/opt/local/lib
+LDLIBS = -lpng -lm
 
-TARGET = bin
+SRCS = main.c
+OBJS = $(SRCS:.c=.o)
+TARGET = my_program
 
 all: $(TARGET)
 
-$(TARGET): main.c
-	$(CC) $(CFLAGS) -o $(TARGET) main.c
+$(TARGET): $(OBJS)
+	$(CC) $(LDFLAGS) $(OBJS) $(LDLIBS) -o $(TARGET)
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 run: $(TARGET)
-	./$(TARGET)
+	./$(TARGET) && rm -rf my_program main.o
 
 clean:
-	rm -f $(TARGET)
+	rm -f $(OBJS) $(TARGET)
+
+.PHONY: all run clean
